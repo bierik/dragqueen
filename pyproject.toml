@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "mindreader"
+version = "0.1.0"
+description = ""
+authors = ["Fabasoft 4teamwork AG"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+langchain = "^0.0.352"
+openai = "^1.6.1"
+python-dotenv = "^1.0.0"
+langserve = {extras = ["all"], version = "^0.0.37"}
+uvicorn = "^0.25.0"
+pypdf = "^3.17.4"
+chromadb = "^0.4.21"
+tiktoken = "^0.5.2"
+gpt4all = "^2.0.2"
+unstructured = {extras = ["pdf"], version = "^0.11.6"}
+boto3 = "^1.34.8"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
