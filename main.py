@@ -7,7 +7,7 @@ from operator import itemgetter
 import click
 from dotenv import load_dotenv
 from langchain.chat_models import ChatOllama
-from langchain.embeddings import OllamaEmbeddings
+from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.schema import StrOutputParser
 from langchain_core.runnables import RunnableParallel, RunnablePassthrough
 
@@ -29,10 +29,7 @@ vectorstore = Vectorstore(
     os.getenv("CHROMA_HOST", "localhost"),
     os.getenv("CHROMA_PORT", "9000"),
     "dls_rag_collection",
-    OllamaEmbeddings(
-        base_url=os.getenv("OLLAMA_BASE_URL", "http://gpu01t.4teamwork.ch:80"),
-        model="llama2",
-    ),
+    HuggingFaceEmbeddings(model_name="all-MiniLM-L12-v2"),
 )
 vectorstore.init()
 retriever = vectorstore.as_retriever()
