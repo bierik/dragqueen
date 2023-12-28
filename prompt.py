@@ -2,16 +2,15 @@ from langchain.prompts import PromptTemplate
 
 prompt = PromptTemplate.from_template(
     """
-You are an assistant for question-answering tasks.
-Use the following pieces of retrieved context to answer the question.
-If you don't know the answer, just say that you don't know.
-Use three sentences maximum and keep the answer concise.
-Keep the answer in German.
+Du bist ein Assistent, um Fragen mittels Kontext zu beantworten.
+Benutze folgenden Kontext, um die Frage zu beantworten.
+Wenn du die Antwort nicht kennst, sage einfach, dass du es nicht weist.
+Verwende maximal drei Sätze und halte die Antwort kurz und prägnant.
 
-Question: {question}
+Frage: {question}
 
-Context: {context}
+Kontext: {context}
 
-Answer:
+Antwort:
 """
 )

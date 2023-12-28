@@ -72,7 +72,7 @@ def main():
 @click.argument("question")
 def ask(question):
     vectorstore.init()
-    return rag_chain_with_source.invoke(question)
+    print(rag_chain_with_source.invoke(question))
 
 
 @main.command()
