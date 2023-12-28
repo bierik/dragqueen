@@ -1,6 +1,6 @@
 import logging
 
-from langchain.document_loaders import OnlinePDFLoader
+from langchain.document_loaders import PyMuPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 logger = logging.getLogger("mindreader")
@@ -16,7 +16,7 @@ class Loader:
 
     def extract_documents(self, path):
         logger.info(f"Extracting PDF from {path}")
-        loader = OnlinePDFLoader(path)
+        loader = PyMuPDFLoader(path)
         return loader.load()
 
     def split(self, documents, source):
