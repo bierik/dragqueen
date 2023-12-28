@@ -8,17 +8,10 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 langchain = "^0.0.352"
-openai = "^1.6.1"
 python-dotenv = "^1.0.0"
-langserve = {extras = ["all"], version = "^0.0.37"}
-uvicorn = "^0.25.0"
-pypdf = "^3.17.4"
 chromadb = "^0.4.21"
-tiktoken = "^0.5.2"
 gpt4all = "^2.0.2"
 unstructured = {extras = ["pdf"], version = "^0.11.6"}
-boto3 = "^1.34.8"
-tqdm = "^4.66.1"
 click = "^8.1.7"
 
 
