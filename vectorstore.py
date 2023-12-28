@@ -1,40 +1,35 @@
-import uuid
+import logging
 
 import chromadb
-from langchain.embeddings import OllamaEmbeddings
-from langchain.vectorstores import Chroma
+from langchain.vectorstores.chroma import Chroma
 
-embeddings = OllamaEmbeddings(base_url="http://gpu01t.4teamwork.ch:80", model="llama2")
-
-chroma_client = client = chromadb.HttpClient()
+logger = logging.getLogger("mindreader")
 
 
-class EmbeddingFunction:
-    def __call__(self, input):
-        return embeddings.embed_documents(input)
+class Vectorstore:
+    def __init__(self, host, port, collection_name, embedding_function):
+        self.client = chromadb.HttpClient(host=host, port=port)
+        self.collection_name = collection_name
+        self.embedding_function = embedding_function
+        self.store = None
 
+    def reset(self):
+        self.client.reset()
+        self.store = None
 
-collection = client.get_or_create_collection(
-    name="my_collection", embedding_function=EmbeddingFunction()
-)
+    def init(self):
+        if self.store:
+            return
+        self.store = Chroma(
+            client=self.client,
+            collection_name=self.collection_name,
+            embedding_function=self.embedding_function,
+        )
 
-vectorstore = Chroma(
-    client=client,
-    collection_name="my_collection",
-    embedding_function=embeddings,
-)
+    def add_documents(self, documents):
+        document_count = len(documents)
+        logger.info(f"Embedding {document_count} documents")
+        self.store.add_documents(documents)
 
-
-def add(document):
-    collection.add(
-        ids=[str(uuid.uuid1())],
-        metadatas=document.metadata,
-        documents=document.page_content,
-    )
-
-
-def reset():
-    chroma_client.reset()
-
-
-retriever = vectorstore.as_retriever()
+    def as_retriever(self, **kwargs):
+        return self.store.as_retriever(**kwargs)

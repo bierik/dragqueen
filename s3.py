@@ -23,3 +23,6 @@ class S3Client:
         return paginator.paginate(
             Bucket=self.bucket_name, PaginationConfig={"MaxItems": 10}
         )
+
+    def download(self, path, fio):
+        return self.client.download_fileobj(self.bucket_name, path, fio)

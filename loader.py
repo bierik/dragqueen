@@ -1,15 +1,31 @@
+import logging
+
 from langchain.document_loaders import OnlinePDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-
-def load(path, source):
-    loader = OnlinePDFLoader(path)
-    docs = loader.load()
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-    docs = text_splitter.split_documents(docs)
-    for doc in docs:
-        doc.metadata["source"] = source
-    return docs
+logger = logging.getLogger("mindreader")
 
 
-# https://sos-ch-dk-2.exo.io/dls-bs-prod-public/28/48/36/ba267b11c0396c50bdcb779aa6/20170118_Beschlussprotokoll/original.pdf
+class Loader:
+    def __init__(self, chunk_size=1000, chunk_overlap=200):
+        self.chunk_size = chunk_size
+        self.chunk_overlap = chunk_overlap
+        self.splitter = RecursiveCharacterTextSplitter(
+            chunk_size=1000, chunk_overlap=200
+        )
+
+    def extract_documents(self, path):
+        logger.info(f"Extracting PDF from {path}")
+        loader = OnlinePDFLoader(path)
+        return loader.load()
+
+    def split(self, documents, source):
+        logger.info(f"Splitting document")
+        docs = self.splitter.split_documents(documents)
+        for doc in docs:
+            doc.metadata["source"] = source
+        return docs
+
+    def load(self, path, source):
+        documents = self.extract_documents(path)
+        return self.split(documents, source)

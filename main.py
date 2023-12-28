@@ -1,68 +1,44 @@
-import uuid
+#!/usr/bin/env python
+import logging
+import os
+import sys
 from operator import itemgetter
-from pathlib import Path
 
-import chromadb
-from chromadb.config import Settings
+import click
+from dotenv import load_dotenv
 from langchain.chat_models import ChatOllama
-from langchain.document_loaders import DirectoryLoader, PyPDFLoader, S3FileLoader
-from langchain.embeddings import OllamaEmbeddings
-from langchain.prompts import PromptTemplate
+from langchain.embeddings import GPT4AllEmbeddings
 from langchain.schema import StrOutputParser
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores import Chroma
 from langchain_core.runnables import RunnableParallel, RunnablePassthrough
 
-loader = PyPDFLoader(str(Path(__file__).parent / "fixtures" / "sample2.pdf"))
-docs = loader.load()
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-chunks = text_splitter.split_documents(docs)
+from loader import Loader
+from prompt import prompt
+from scrapper import Scrapper
+from vectorstore import Vectorstore
 
-embeddings = OllamaEmbeddings(base_url="http://gpu01t.4teamwork.ch:80", model="llama2")
-
-chroma_client = client = chromadb.HttpClient(settings=Settings(allow_reset=True))
+load_dotenv()
 
 
-class EmbeddingFunction:
-    def __call__(self, input):
-        return embeddings.embed_documents(input)
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+logger = logging.getLogger("mindreader")
 
+scrapper = Scrapper("https://dls.staatsarchiv.bs.ch")
+paginator = scrapper.paginate()
 
-chroma_client.reset()
-collection = client.create_collection(
-    name="my_collection", embedding_function=EmbeddingFunction()
+vectorstore = Vectorstore(
+    os.getenv("CHROMA_HOST", "localhost"),
+    os.getenv("CHROMA_PORT", "9000"),
+    "dls_rag_collection",
+    GPT4AllEmbeddings(),
 )
-
-for chunk in chunks:
-    collection.add(
-        ids=[str(uuid.uuid1())],
-        metadatas=chunk.metadata,
-        documents=chunk.page_content,
-    )
-
-
-vectorstore = Chroma(
-    client=client,
-    collection_name="my_collection",
-    embedding_function=embeddings,
-)
+vectorstore.init()
 retriever = vectorstore.as_retriever()
 
-llm = ChatOllama(base_url="http://gpu01t.4teamwork.ch:80", model="llama2")
+loader = Loader()
 
-prompt = PromptTemplate.from_template(
-    """
-You are an assistant for question-answering tasks.
-Use the following pieces of retrieved context to answer the question.
-If you don't know the answer, just say that you don't know.
-Use three sentences maximum and keep the answer concise.
-
-Question: {question}
-
-Context: {context}
-
-Answer:
-"""
+llm = ChatOllama(
+    base_url=os.getenv("OLLAMA_BASE_URL", "http://gpu01t.4teamwork.ch:80"),
+    model="llama2",
 )
 
 
@@ -86,4 +62,31 @@ rag_chain_with_source = RunnableParallel(
     "answer": rag_chain_from_docs,
 }
 
-print(rag_chain_with_source.invoke("How are neutrinos produced?"))
+
+@click.group()
+def main():
+    pass
+
+
+@main.command()
+@click.argument("question")
+def ask(question):
+    vectorstore.init()
+    return rag_chain_with_source.invoke(question)
+
+
+@main.command()
+def load():
+    vectorstore.init()
+    for file in paginator:
+        documents = loader.load(file["s3_path"], file["identifier"])
+        vectorstore.add_documents(documents)
+
+
+@main.command()
+def reset():
+    vectorstore.reset()
+
+
+if __name__ == "__main__":
+    main()
