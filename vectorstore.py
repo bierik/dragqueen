@@ -31,7 +31,7 @@ class Vectorstore:
             return
         document_count = len(documents)
         logger.info(f"Embedding {document_count} documents")
-        self.store.add_documents(documents)
+        self.store.aadd_documents(documents)
 
     def as_retriever(self, **kwargs):
         return self.store.as_retriever(**kwargs)
