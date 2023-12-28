@@ -27,6 +27,8 @@ class Vectorstore:
         )
 
     def add_documents(self, documents):
+        if not documents:
+            return
         document_count = len(documents)
         logger.info(f"Embedding {document_count} documents")
         self.store.add_documents(documents)

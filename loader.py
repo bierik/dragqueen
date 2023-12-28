@@ -20,7 +20,7 @@ class Loader:
         return loader.load()
 
     def split(self, documents, source):
-        logger.info(f"Splitting document")
+        logger.info("Splitting document")
         docs = self.splitter.split_documents(documents)
         for doc in docs:
             doc.metadata["source"] = source
