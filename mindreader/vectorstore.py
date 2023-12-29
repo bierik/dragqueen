@@ -14,6 +14,7 @@ class Vectorstore:
         self.store = None
 
     def reset(self):
+        logger.info("Resetting vectorstore")
         self.client.reset()
         self.store = None
 

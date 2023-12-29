@@ -10,10 +10,14 @@ python = "^3.11"
 langchain = "^0.0.352"
 python-dotenv = "^1.0.0"
 chromadb = "^0.4.21"
-gpt4all = "^2.0.2"
 click = "^8.1.7"
 sentence-transformers = "^2.2.2"
 pymupdf = "^1.23.8"
+langserve = {extras = ["all"], version = "^0.0.37"}
+uvicorn = "^0.25.0"
+pydantic = "<2"
+exceptiongroup = "^1.2.0"
+async-timeout = "^4.0.3"
 
 
 [build-system]

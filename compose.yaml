@@ -3,11 +3,47 @@ version: "3"
 services:
   chroma:
     image: chromadb/chroma
+    container_name: chroma
     volumes:
-      - ./data/chroma:/chroma/chroma
-    ports:
-      - 9000:8000
+      - chroma:/chroma/chroma
     command: uvicorn chromadb.app:app --reload --workers 1 --host 0.0.0.0 --port 8000
     environment:
       - IS_PERSISTENT=TRUE
       - ALLOW_RESET=TRUE
+
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    volumes:
+      - ollama:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+
+  mindreader:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 80:8000
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    environment:
+      - CHROMA_HOST=chroma
+      - CHROMA_PORT=8000
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - OLLAMA_MODEL=llama2
+
+volumes:
+  ollama:
+  chroma:
