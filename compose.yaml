@@ -25,7 +25,7 @@ services:
               capabilities: [gpu]
 
 
-  mindreader:
+  dragqueen:
     build:
       context: .
       dockerfile: Dockerfile

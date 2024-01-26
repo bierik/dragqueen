@@ -46,20 +46,20 @@ Anbei eine Übersicht der oben genannten Systemkomponenten:
 **Datenbank leeren**
 
 ``` bash
-docker compose run mindreader /app/cli.py reset
+docker compose run dragqueen /app/cli.py reset
 ```
 
 **Datenbank indexieren**
 
 ``` bash
-docker compose run mindreader /app/cli.py load
+docker compose run dragqueen /app/cli.py load
 ```
 
 ## Starten der Applikation
 
 ``` bash
 git clone https://github.com/4teamwork/mindreader
-cd mindreader
+cd dragqueen
 docker compose up -d
 ```
 

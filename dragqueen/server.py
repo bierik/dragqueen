@@ -2,14 +2,13 @@
 import os
 
 from dotenv import load_dotenv
+from dragqueen.chain import build_rag_chain
+from dragqueen.prompt import prompt
+from dragqueen.vectorstore import Vectorstore
 from fastapi import FastAPI
 from langchain.chat_models import ChatOllama
 from langchain.embeddings import HuggingFaceEmbeddings
 from langserve import add_routes
-
-from mindreader.chain import build_rag_chain
-from mindreader.prompt import prompt
-from mindreader.vectorstore import Vectorstore
 
 load_dotenv()
 

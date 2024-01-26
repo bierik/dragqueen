@@ -3,7 +3,7 @@ import logging
 import chromadb
 from langchain.vectorstores.chroma import Chroma
 
-logger = logging.getLogger("mindreader")
+logger = logging.getLogger("dragqueen")
 
 
 class Vectorstore:

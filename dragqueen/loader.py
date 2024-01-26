@@ -3,7 +3,7 @@ import logging
 from langchain.document_loaders import PyMuPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-logger = logging.getLogger("mindreader")
+logger = logging.getLogger("dragqueen")
 
 
 class Loader:

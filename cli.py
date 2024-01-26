@@ -5,11 +5,10 @@ import sys
 
 import click
 from dotenv import load_dotenv
+from dragqueen.loader import Loader
+from dragqueen.scrapper import Scrapper
+from dragqueen.vectorstore import Vectorstore
 from langchain.embeddings import HuggingFaceEmbeddings
-
-from mindreader.loader import Loader
-from mindreader.scrapper import Scrapper
-from mindreader.vectorstore import Vectorstore
 
 load_dotenv()
 

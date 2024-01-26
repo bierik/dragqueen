@@ -10,7 +10,7 @@ RUN pip install poetry && \
   poetry config virtualenvs.create false && \
   poetry install --no-interaction --no-ansi --only main
 
-COPY mindreader /app/mindreader
+COPY dragqueen /app/dragqueen
 COPY cli.py /app/
 
-CMD exec uvicorn mindreader.server:app --host 0.0.0.0 --port 8000
+CMD exec uvicorn dragqueen.server:app --host 0.0.0.0 --port 8000

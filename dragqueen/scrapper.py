@@ -5,7 +5,7 @@ from itertools import chain
 
 import requests
 
-logger = logging.getLogger("mindreader")
+logger = logging.getLogger("dragqueen")
 
 
 class Scrapper:
